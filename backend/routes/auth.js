@@ -4,10 +4,11 @@ const router = express.Router()
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = 'MongoDBReactExpressNodejs'
+var JWT_SECRET = 'MongoDBReactExpressNodejs'
+var fetchuser = require("../middleware/fetchuser")
 
 
-// Create a User using: POST "/api/auth/createuser". No login required
+// ROUTE 1:- Create a User using: POST "/api/auth/createuser". No login required
 router.post('/createuser',[
     body('name','Enter a valid name').isLength({min: 3}),
     body('email','Enter a valid email').isEmail(),
@@ -45,7 +46,7 @@ router.post('/createuser',[
 })
 
 
-// Authenticate user using: POST "/api/auth/login" : No login required
+// ROUTE 2:-  Authenticate user using: POST "/api/auth/login" : No login required
 router.post('/login',[
   body('email','Enter a valid email').isEmail(),
   body('password','password cannot be blank').exists(),
@@ -66,7 +67,9 @@ router.post('/login',[
         return res.status(400).json({error:"PLEASE TRY TO LOGIN WITH CORRECT CREDENTIALS"})
       }
       const data={
-        id:user.id
+        user:{
+          id:user.id
+        }
       }
       const authToken= jwt.sign(data,JWT_SECRET);
       res.json({authToken})
@@ -74,5 +77,18 @@ router.post('/login',[
       console.error(error.message);
       res.status(500).send("Internal server error occured")
     }
-})
+});
+
+// ROUTE 3:-  Grt loggedin user Details using: POST "/api/auth/getuser" : No login required
+router.post('/getuser',fetchuser, async(req,res)=>{
+try {
+  userId = req.user.id;
+  const user = await User.findById(userId).select("-password")
+  res.send(user)
+} catch (error) {
+  console.error(error.message);
+      res.status(500).send("Internal server error occured");
+}
+});
+
 module.exports = router
