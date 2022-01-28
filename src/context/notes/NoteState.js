@@ -1,40 +1,38 @@
 import NoteContext from "./noteContext";
 import { useState } from "react";
 const NoteState = (props)=>{
-    const notesInitial = [
-        {
-          "_id": "61eff7860f92093d16c7731e",
-          "user": "61efddef9527408adaa23945",
-          "title": "My first Note",
-          "description": "Description of first note",
-          "tag": "personal",
-          "date": "2022-01-25T13:13:42.178Z",
-          "__v": 0
-        },
-        {
-          "_id": "61f00eed15af979b3a6cdf3f",
-          "user": "61efddef9527408adaa23945",
-          "title": "My first Note",
-          "description": "Description of first note",
-          "tag": "personal",
-          "date": "2022-01-25T14:53:33.263Z",
-          "__v": 0
-        },
-        {
-          "_id": "61f00eee15af979b3a6cdf43",
-          "user": "61efddef9527408adaa23945",
-          "title": "My first Note",
-          "description": "Description of first note",
-          "tag": "personal",
-          "date": "2022-01-25T14:53:34.746Z",
-          "__v": 0
-        },
-    
-      ]
+  const host = "http://localhost:4000"
+    const notesInitial = []
       const [notes, setNotes] = useState(notesInitial);
+       // Get All Note
+       const getNote= async()=>{
+        // API Call
+        const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+          method: 'GET', 
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
+          }
+        });
+        const json = await response.json()
+        console.log(json);
+        setNotes(json);
+      }
+      
+   // Add Note
+        const addNote= async(title, description, tag)=>{
+            // API Call
+            const response = await fetch(`${host}/api/notes/addnote`, {
+              method: 'POST', 
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
+              },
+              body: JSON.stringify({title,description,tag}) 
+            });
 
-      // Add Note
-        const addNote=(title, description, tag)=>{
           console.log("Adding a note")
           const note = 
             {
@@ -53,13 +51,36 @@ const NoteState = (props)=>{
           console.log("Deleting Node with id " + id)
           const newNotes = notes.filter((note)=>{return note._id!==id})
           setNotes(newNotes);
+    
         }
       // Edit a Note
-        const editNote = (id,title,description,tag)=>{
+        const editNote = async (id,title,description,tag)=>{
 
+          // API Call
+          const response = await fetch(`${host}api/notes/updatenote/${id}`, {
+            method: 'POST', 
+            mode:'cors',
+            headers: {
+              'Content-Type': 'application/json',
+              "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
+            },
+            body: JSON.stringify({title,description,tag}) 
+          });
+          const json =  response.json(); 
+        
+
+            //Logic to edit client
+            for (let index = 0; index < notes.length; index++) {
+              const element = notes[index];
+              if(element._id===id){
+                element.title = title;
+                element.description = description;
+                element.tag = tag;
+              }
+            }
         }
     return(
-        <NoteContext.Provider value={{notes, addNote, deleteNote,editNote}}>
+        <NoteContext.Provider value={{notes, addNote, deleteNote,editNote,getNote}}>
             {props.children}
         </NoteContext.Provider>
     )
