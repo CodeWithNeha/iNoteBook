@@ -11,13 +11,14 @@ export default function Notes() {
       getNote()
       // eslint-disable-next-line
     }, []);
+    const ref = useRef(null);
+    const refClose = useRef(null);
+    const [note, setNote] = useState({id:"",etitle:"",edescription:"",etag:""});
+
     const updateNote = (currentNote)=>{
       ref.current.click();
       setNote({id:currentNote._id, etitle:currentNote.title,edescription:currentNote.description,etag:currentNote.tag});
     }
-    const ref = useRef(null);
-    const refClose = useRef(null);
-    const [note, setNote] = useState({id:"",etitle:"",edescription:"",etag:""});
 
     const handleClick = (e)=>{
       console.log("updating note",note);

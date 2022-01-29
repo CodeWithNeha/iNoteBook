@@ -1,5 +1,6 @@
 import NoteContext from "./noteContext";
 import { useState } from "react";
+
 const NoteState = (props)=>{
   const host = "http://localhost:4000"
     const notesInitial = []
@@ -21,11 +22,10 @@ const NoteState = (props)=>{
       }
       
    // Add Note
-        const addNote= async(title, description, tag)=>{
+        const addNote= async (title, description, tag)=>{
             // API Call
           const response = await fetch(`${host}/api/notes/addnote`, {
-            method: 'POST', 
-            mode:'cors',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
