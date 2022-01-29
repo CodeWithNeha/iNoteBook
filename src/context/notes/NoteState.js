@@ -23,25 +23,16 @@ const NoteState = (props)=>{
    // Add Note
         const addNote= async(title, description, tag)=>{
             // API Call
-            const response = await fetch(`${host}/api/notes/addnote`, {
-              method: 'PUT', 
-              headers: {
-                'Content-Type': 'application/json',
-                "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
-              },
-              body: JSON.stringify({title,description,tag}) 
-            });
-          console.log("Adding a note")
-          const note = 
-            {
-              "_id": "61f00eef15af979b3a6cdf45",
-              "user": "61efddef9527408adaa23945",
-              "title": title,
-              "description": description,
-              "tag": tag,
-              "date": "2022-01-25T14:53:35.592Z",
-              "__v": 0
-            }
+          const response = await fetch(`${host}/api/notes/addnote`, {
+            method: 'POST', 
+            mode:'cors',
+            headers: {
+              'Content-Type': 'application/json',
+              "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjFlZmRkZWY5NTI3NDA4YWRhYTIzOTQ1In0sImlhdCI6MTY0MzExMzA0Nn0.GaIKnoif5sjcuDxgrZ2acE17unYpBp_kTpDG45qgtPY"
+            },
+            body: JSON.stringify({title, description, tag}) 
+          });
+          const note = await response.json();
           setNotes(notes.concat(note));
         }
       // Delete a Node
